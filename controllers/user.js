@@ -489,13 +489,14 @@ const getCurrent2 = async (req, res) => {
   console.log(" req.user", req.user);
   try {
     const sql = `SELECT * FROM users WHERE user_id = ?`;
-    db.query(sql, [req.user.id], (err, result) => {
+    db.query(sql, [req.user.user_id], (err, result) => {
       if (err) {
         console.log("error", err);
         return res.status(400).send({ error: err });
       }
       if(!result) return res.status(400).send({ error: "User not found" });
-      res.status(200).send({ user: req.user });
+      console.log("result", result);
+      res.status(200).send({ user: result[0] });
     });
   } catch (error) {
     console.log("error", error);
