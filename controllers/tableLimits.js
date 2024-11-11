@@ -107,7 +107,7 @@ const getTableLimit = async (req, res) => {
 //@desc Add a new record to table_limit
 //@route POST /table_limit
 //@private Login Required
-const insertInTableLimit = async (req, res) => {
+const addTableLimit = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -120,9 +120,9 @@ const insertInTableLimit = async (req, res) => {
     const sql = `
         INSERT INTO table_limit (
           table_limit_name, date_time, min_bet, max_bet, side_bet_min, side_bet_max,
-          s_message, game_type_id, theme_id, language_id, background_id
+          s_message, game_type_id, theme_id, language_id, background_id,currency_id,commission
         ) VALUES (
-          ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+          ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?
         )
       `;
 
@@ -133,11 +133,13 @@ const insertInTableLimit = async (req, res) => {
       data.max_bet,
       data.side_bet_min,
       data.side_bet_max,
-      data.s_message, 
+      data.s_message,
       data.game_type_id,
       data.theme_id,
       data.language_id,
       data.background_id, // Corrected to match the number of columns
+      data.currency_id,
+      data.commission
     ];
 
     const sql2 = `
@@ -181,34 +183,26 @@ const updateTableLimit = async (req, res) => {
   }
 
   const data = matchedData(req);
+  console.log("data: ", data);
+  //return res.status(200).send({ message: "Record updated successfully" });
 
   try {
-    const sql = `
+    let sql = `
       UPDATE table_limit
-      SET min_bet = ?,
-          max_bet = ?,
-          side_bet_min = ?,
-          side_bet_max = ?,
-          s_message = ?,
-          theme = ?,
-          language = ?,
-          background = ?
-      WHERE table_limit_id = ?
+      SET min_bet = ${data.min_bet},
+          max_bet = ${data.max_bet},
+          side_bet_min = ${data.side_bet_min},
+          side_bet_max = ${data.side_bet_max},
+          s_message = '${data.s_message || ""}',
+          theme_id = ${data.theme_id},
+          language_id = ${data.language_id},
+          background_id = ${data.background_id},
+          currency_id = ${data.currency_id},
+          commission = ${data.commission || 0}
+      WHERE table_limit_id = ${req.params.id}
     `;
 
-    const values = [
-      data.min_bet,
-      data.max_bet,
-      data.side_bet_min,
-      data.side_bet_max,
-      data.s_message,
-      data.theme,
-      data.language,
-      data.background,
-      req.params.id,
-    ];
-
-    db.query(sql, values, (err, result) => {
+    db.query(sql, (err, result) => {
       if (err) {
         console.log("error", err);
         return res.status(400).send({ error: err });
@@ -227,7 +221,7 @@ const updateTableLimit = async (req, res) => {
 module.exports = {
   Test,
   getTable,
-  insertInTableLimit,
+  addTableLimit,
   updateTableLimit,
   getTableLimit,
 };

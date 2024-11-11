@@ -5,18 +5,25 @@ const { body } = require("express-validator");
 const {
   Test,
   insertInTableType,
+
   addTheme,
   addBackground,
   addLanguage,
+  addCurrency,
+
   getLanguage,
   getTheme,
   getBackground,
+  getCurrency,
+
   getTableType,
   getConfigs,
+
   updateGameType,
   updateTheme,
   updateBackground,
   updateLanguage,
+  updateCurrency
 } = require("../controllers/config.js");
 
 //@desc TEST
@@ -56,6 +63,15 @@ router.post(
   addLanguage
 );
 
+//@desc Add Currency
+//@route POST /add/currency
+//@access Public
+router.post(
+  "/add/currency",
+  [body("currency", "currency required")],
+  addCurrency
+);
+
 //@desc Get Word
 //@route GET /add/language
 //@access Public
@@ -70,6 +86,11 @@ router.get("/get/theme", getTheme);
 //@route GET /get/background
 //@access Public
 router.get("/get/background", getBackground);
+
+//@desc Get Word
+//@route GET /get/currency
+//@access Public
+router.get("/get/currency", getCurrency);
 
 //@desc Get Word
 //@route GET /get/table/type
@@ -106,6 +127,15 @@ router.put(
   "/update/language/:id",
   [body("language", "language required")],
   updateLanguage
+);
+
+//@desc Update Currency
+//@route PUT /update/currency/:id
+//@access Public
+router.put(
+  "/update/currency/:id",
+  [body("currency", "currency required")],
+  updateCurrency
 );
 
 //@desc Get Word

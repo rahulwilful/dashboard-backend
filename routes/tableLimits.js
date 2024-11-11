@@ -4,7 +4,7 @@ const { body } = require("express-validator");
 
 const {
   Test,
-  insertInTableLimit,
+  addTableLimit,
   updateTableLimit,
   getTable,
   getTableLimit,
@@ -41,8 +41,10 @@ router.post(
     body("theme_id", "theme id required"),
     body("language_id", "language_id required"),
     body("background_id", "background_id required"),
+    body("currency_id", "currency_id required"),
+    body("commission", )
   ],
-  insertInTableLimit
+  addTableLimit
 );
 
 //@desc Get Word
@@ -59,6 +61,10 @@ router.put(
     body("theme_id", "theme_id required"),
     body("language_id", "language_id required"),
     body("background_id", "background_id required"),
+    body("currency_id", "currency_id required"),
+    body("commission", )
+    
+
   ],
   updateTableLimit
 );

@@ -13,7 +13,7 @@ const Test = async (req, res) => {
   // console.log("data: ", req.body, data);
 
   try {
-    res.status(201).send({ result: "Conected to table type" });
+    res.status(201).send({ result: "Conected to Configs" });
   } catch (error) {
     console.log("error", error);
     res.status(400).send({ error: error });
@@ -169,6 +169,44 @@ const addLanguage = async (req, res) => {
   }
 };
 
+//@desc Add a new record to table_currency
+//@route POST /table_limit/add/currency
+//@access Public
+const addCurrency = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const data = matchedData(req);
+  console.log("data: ", data);
+
+  try {
+    const sql = `
+        INSERT INTO currency (
+          currency
+        ) VALUES (
+          ?
+        )
+      `;
+
+    const values = [data.currency];
+
+    db.query(sql, values, (err, result) => {
+      if (err) {
+        console.log("error", err);
+        return res.status(400).send({ error: err });
+      }
+      res
+        .status(201)
+        .send({ message: "Currency added successfully", result: result });
+    });
+  } catch (error) {
+    console.log("error", error);
+    res.status(400).send({ error: error });
+  }
+};
+
 //@desc Get all languages
 //@route GET /table_limit/get/language
 //@access Public
@@ -182,6 +220,26 @@ const getLanguage = async (req, res) => {
         return res.status(400).send({ error: err });
       }
       res.status(200).send({ languages: result });
+    });
+  } catch (error) {
+    console.log("error", error);
+    res.status(400).send({ error: error });
+  }
+};
+
+//@desc Get all currencies
+//@route GET /table_limit/get/currency
+//@access Public
+const getCurrency = async (req, res) => {
+  try {
+    const sql = "SELECT * FROM currency";
+
+    db.query(sql, (err, result) => {
+      if (err) {
+        console.log("error", err);
+        return res.status(400).send({ error: err });
+      }
+      res.status(200).send({ currencies: result });
     });
   } catch (error) {
     console.log("error", error);
@@ -364,6 +422,34 @@ const updateLanguage = async (req, res) => {
   }
 };
 
+//@desc Update currency
+//@route PUT /update/currency/:id
+//@access Public
+const updateCurrency = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = matchedData(req);
+
+    const sql = "UPDATE currency SET currency = ? WHERE currency_id = ?";
+
+    const values = [data.currency, id];
+
+    db.query(sql, values, (err, result) => {
+      if (err) {
+        console.log("error", err);
+        return res.status(400).send({ error: err });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).send({ message: "Record not found" });
+      }
+      res.status(200).send({ message: "Record updated successfully" });
+    });
+  } catch (error) {
+    console.log("error", error);
+    res.status(400).send({ error: error });
+  }
+};
+
 //@desc Get all configuration data
 //@route GET /table_limit/get/configs
 //@access Public
@@ -401,6 +487,15 @@ const getConfigs = async (req, res) => {
       configData.backgrounds = result;
     });
 
+    const currencySql = "SELECT * FROM currency";
+    db.query(currencySql, (err, result) => {
+      if (err) {
+        console.log("error", err);
+        return res.status(400).send({ error: err });
+      }
+      configData.currencys = result;
+    });
+
     // Get table types
     const tableTypesSql = "SELECT * FROM game_type";
     db.query(tableTypesSql, (err, result) => {
@@ -422,16 +517,23 @@ module.exports = {
   Test,
   insertInTableType,
   insertInTableType,
+
   addTheme,
   addBackground,
   addLanguage,
+  addCurrency,
+
   getLanguage,
   getTheme,
   getBackground,
+  getCurrency,
+
   getTableType,
   getConfigs,
+
   updateGameType,
   updateTheme,
   updateBackground,
   updateLanguage,
+  updateCurrency
 };
