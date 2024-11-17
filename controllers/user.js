@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 /*  # Name  Type  Collation Attributes  Null  Default Comments  Extra Action
   1 user_id Primary int(100)      No  None    AUTO_INCREMENT  Change Change Drop Drop 
   2 name  varchar(255)  utf8mb4_general_ci    No  None      Change Change Drop Drop 
-  3 email varchar(255)  utf8mb4_general_ci    No  None      Change Change Drop Drop 
+  3 user_name varchar(255)  utf8mb4_general_ci    No  None      Change Change Drop Drop 
   4 phone_no  int(15)     No  None      Change Change Drop Drop 
   5 password  varchar(255)  utf8mb4_general_ci    No  None      Change Change Drop Drop 
   6 roleType  varchar(255)  utf8mb4_general_ci    No  None      Change Change Drop Drop 
@@ -49,7 +49,7 @@ const createSuperAdmin = async (req, res) => {
 
   const {
     name,
-    email,
+    user_name,
     phone_no,
     roleType,
     limits,
@@ -61,24 +61,24 @@ const createSuperAdmin = async (req, res) => {
 
   try {
     const sql_check = `
-    SELECT * FROM users WHERE email = ?
+    SELECT * FROM users WHERE user_name = ?
   `;
 
-    db.query(sql_check, [email], (err, result) => {
+    db.query(sql_check, [user_name], (err, result) => {
       if (err) {
         console.log("error", err);
         return res.status(400).send({ error: err });
       }
 
       if (result.length !== 0) {
-        return res.status(409).send({ message: "Email already exists" });
+        return res.status(409).send({ message: "user_name already exists" });
       }
 
       const salt = bcrypt.genSaltSync(10);
       const password = bcrypt.hashSync(data.password, salt);
       const values = [
         name,
-        email,
+        user_name,
         phone_no,
         password,
         "super_admin",
@@ -90,7 +90,7 @@ const createSuperAdmin = async (req, res) => {
       ];
 
       const sql = `
-    INSERT INTO users (name, email, phone_no, password, roleType, limits, analysis, config, settings,users) 
+    INSERT INTO users (name, user_name, phone_no, password, roleType, limits, analysis, config, settings,users) 
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)
   `;
 
@@ -129,7 +129,7 @@ const createUser = async (req, res) => {
     const password = await bcrypt.hash(data.password, salt);
     const values = [
       data.name,
-      data.email,
+      data.user_name,
       data.phone_no,
       password,
       data.roleType,
@@ -141,7 +141,7 @@ const createUser = async (req, res) => {
     ];
 
     const sql = `
-    INSERT INTO users (name, email, phone_no, password, roleType, limits, analysis, config, settings,users) 
+    INSERT INTO users (name, user_name, phone_no, password, roleType, limits, analysis, config, settings,users) 
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)
   `;
 
@@ -173,11 +173,11 @@ const Login = async (req, res) => {
   }
 
   try {
-    const { email, password } = data;
+    const { user_name, password } = data;
 
-    const sql = `SELECT * FROM users WHERE email = ?`;
+    const sql = `SELECT * FROM users WHERE user_name = ?`;
    
-    db.query(sql, [email], (err, result) => {
+    db.query(sql, [user_name], (err, result) => {
       if (err) {
         console.log("error", err);
         return res.status(400).send({ error: err });
@@ -245,9 +245,9 @@ const updateUser = async (req, res) => {
 
   try {
     const sql = `
-    UPDATE users SET name = ?, email = ?, phone_no = ? WHERE user_id = ?
+    UPDATE users SET name = ?, user_name = ?, phone_no = ? WHERE user_id = ?
   `;
-    const values = [data.name, data.email, data.phone_no, req.params.id];
+    const values = [data.name, data.user_name, data.phone_no, req.params.id];
 
     db.query(sql, values, (err, result) => {
       if (err) {
@@ -279,11 +279,11 @@ const updateUserBySuperAdmin = async (req, res) => {
 
   try {
     const sql = `
-    UPDATE users SET name = ?, email = ?, phone_no = ?, roleType = ?, limits = ?, analysis = ?, config = ?, settings = ?, users = ? WHERE user_id = ?
+    UPDATE users SET name = ?, user_name = ?, phone_no = ?, roleType = ?, limits = ?, analysis = ?, config = ?, settings = ?, users = ? WHERE user_id = ?
     `;
     const values = [
       data.name,
-      data.email,
+      data.user_name,
       data.phone_no,
       data.roleType,
       data.limits,

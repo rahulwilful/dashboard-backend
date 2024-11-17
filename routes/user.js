@@ -48,7 +48,7 @@ router.post(
   "/create/super/admin",
   [
     body("name", "name required"),
-    body("email", "email required"),
+    body("user_name", ""),
     body("phone_no", "phone_no required"),
     body("password", "password required"),
   ],
@@ -62,7 +62,7 @@ router.post(
   "/add",
   [
     body("name", "name required").notEmpty(),
-    body("email", "email required").notEmpty(),
+    body("user_name", "user_name required").notEmpty(),
     body("phone_no", "phone_no required").notEmpty(),
     body("roleType", "roleType required").notEmpty(),
     body("limits", "limits required"),
@@ -82,7 +82,7 @@ router.post(
 router.post(
   "/login",
   [
-    body("email", "email required"),
+    body("user_name", "user_name required"),
     body("password", "password required"),
   ],
   Login
@@ -100,7 +100,7 @@ router.put(
   "/update/:id",
   [
     body("name", "name required"),
-    body("email", "email required"),
+    body("user_name", "user_name required"),
     body("phone_no", "phone_no required"),
     
   ],
@@ -115,7 +115,7 @@ router.put(
   "/update/by/super/admin/:id",
   [
     body("name", "name required"),
-    body("email", "email required"),
+    body("user_name", "user_name required"),
     body("phone_no", "phone_no required"),
     body("roleType", "roleType required"),
     body("limits", "limits required"),
