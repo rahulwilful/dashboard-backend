@@ -6,6 +6,7 @@ const {
   Test,
   getGameData,
   getGameDataByDate,
+  getLatestRecords
 } = require("../controllers/game.js");
 
 //@desc TEST
@@ -42,6 +43,14 @@ router.post(
   ],
 
   getGameDataByDate
+);
+
+//@desc Get latest 100 records for the last updated table_limit_id
+//@route GET /game/latest/:game
+//@access private
+router.post(
+  "/get/latest/data/of/:game",
+  getLatestRecords
 );
 
 module.exports = router;

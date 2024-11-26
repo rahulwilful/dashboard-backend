@@ -132,4 +132,69 @@ const getUniqueGameData = async (req, res) => {
   }
 };
 
-module.exports = { Test, getGameData, getGameDataByDate };
+
+//@desc Get latest 100 records for the last updated table_limit_id
+//@route GET /game/latest/:game
+//@access private
+const getLatestRecords = async (req, res) => {
+  const errors = validationResult(req);
+  const data = matchedData(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  try {
+    const { game } = req.params;
+
+    // Query to find the latest table_limit_id
+    const findLastUpdatedSql = `SELECT table_limit_id FROM ${game} ORDER BY date_time DESC LIMIT 1`;
+
+    db.query(findLastUpdatedSql, (err, lastUpdatedResult) => {
+      if (err) {
+        console.log("error", err);
+        return res.status(400).send({ error: err });
+      }
+
+      if (lastUpdatedResult.length === 0) {
+        return res.status(404).send({ message: "No records found" });
+      }
+
+      const lastTableLimitId = lastUpdatedResult[0].table_limit_id;
+
+      // Query to get latest records with game_type_name and table_limit_name
+      const getLatestRecordsSql = `
+        SELECT g.*, gt.game_type_name, tl.table_limit_name
+        FROM ${game} g
+        INNER JOIN game_type gt ON g.game_type_id = gt.game_type_id
+        INNER JOIN table_limit tl ON g.table_limit_id = tl.table_limit_id
+        WHERE g.table_limit_id = ?
+        ORDER BY g.date_time DESC
+        LIMIT 100
+      `;
+
+      db.query(getLatestRecordsSql, [lastTableLimitId], (err, result) => {
+        if (err) {
+          console.log("error", err);
+          return res.status(400).send({ error: err });
+        }
+
+        if (result.length === 0) {
+          return res.status(404).send({ message: "No records found for the last updated table_limit_id" });
+        }
+
+        res.status(200).send({ result });
+      });
+    });
+  } catch (error) {
+    console.log("error", error);
+    res.status(400).send({ error });
+  }
+};
+
+
+
+
+
+
+module.exports = { Test, getGameData, getGameDataByDate,getLatestRecords };
