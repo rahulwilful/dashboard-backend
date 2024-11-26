@@ -408,9 +408,9 @@ const updateGameType = async (req, res) => {
     const data = matchedData(req);
 
     const sql =
-      "UPDATE game_type SET game_type_name = ? WHERE game_type_id = ?";
+      "UPDATE game_type SET game_type_name = ?, active = ? WHERE game_type_id = ?";
 
-    const values = [data.game_type_name, id];
+    const values = [data.game_type_name, data.active, id];
 
     db.query(sql, values, (err, result) => {
       if (err) {

@@ -103,6 +103,7 @@ router.get("/get/table/type", getTableType);
 router.put(
   "/update/game/type/:id",
   [body("game_type_name", "game_type_name required")],
+  [body("active", "active required")],
   updateGameType
 );
 
