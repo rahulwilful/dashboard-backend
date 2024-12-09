@@ -23,7 +23,37 @@ const Test = async (req, res) => {
 };
 
 //@desc Get Tables
-//@route GET /get/tables
+//@route GET /get/all/tables
+//@private Login Required
+const getAllTables = async (req, res) => {
+  const errors = validationResult(req);
+
+  const id = req.params.game_type_id;
+
+  const data = matchedData(req);
+
+  try {
+    const sql = `
+      select * from table_limit    
+    `;
+
+    db.query(sql, (err, result) => {
+      if (err) {
+        console.log("error", err);
+        return res.status(400).send({ error: err });
+      }
+      res
+        .status(201)
+        .send({ message: "Record retrived successfully", result: result });
+    });
+  } catch (error) {
+    console.log("error", error);
+    res.status(400).send({ error: error });
+  }
+};
+
+//@desc Get Tables
+//@route GET /get/tables/:game_type_id
 //@private Login Required
 const getTable = async (req, res) => {
   const errors = validationResult(req);
@@ -139,7 +169,7 @@ const addTableLimit = async (req, res) => {
       data.language_id,
       data.background_id, // Corrected to match the number of columns
       data.currency_id,
-      data.commission
+      data.commission,
     ];
 
     const sql2 = `
@@ -221,6 +251,7 @@ const updateTableLimit = async (req, res) => {
 module.exports = {
   Test,
   getTable,
+  getAllTables,
   addTableLimit,
   updateTableLimit,
   getTableLimit,

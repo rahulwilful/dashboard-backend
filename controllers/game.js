@@ -21,6 +21,39 @@ const Test = async (req, res) => {
 };
 
 //@desc Get game data
+//@route GET /game/get/all/games
+//@access private
+const getAllGames = async (req, res) => {
+  const errors = validationResult(req);
+  const data = matchedData(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  try {
+    const sql = `SELECT * FROM game_type `;
+
+    /*  ORDER BY date_time DESC AND */
+   
+
+    db.query(sql, (err, result) => {
+      if (err) {
+        console.log("error", err);
+        return res.status(400).send({ error: err });
+      }
+      if (result.length === 0) {
+        return res.status(404).send({ message: "Record not found" });
+      }
+      res.status(200).send({ result: result });
+    });
+  } catch (error) {
+    console.log("error", error);
+    res.status(400).send({ error: error });
+  }
+};
+
+//@desc Get game data
 //@route GET /game/get/:game/:game_type_id/:table_limit_id
 //@access private
 const getGameData = async (req, res) => {
@@ -197,4 +230,4 @@ const getLatestRecords = async (req, res) => {
 
 
 
-module.exports = { Test, getGameData, getGameDataByDate,getLatestRecords };
+module.exports = { Test,getAllGames, getGameData, getGameDataByDate,getLatestRecords };

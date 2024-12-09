@@ -5,6 +5,7 @@ const { body } = require("express-validator");
 const {
   Test,
   getGameData,
+  getAllGames,
   getGameDataByDate,
   getLatestRecords
 } = require("../controllers/game.js");
@@ -13,6 +14,15 @@ const {
 //@route GET /game/
 //@access Public
 router.get("/", Test);
+
+//@desc Get game data
+//@route GET /game/get/all/games
+//@access private
+router.get(
+  "/get/all/games",
+
+  getAllGames
+);
 
 //@desc Get game data
 //@route GET /game/get/:game/:game_type_id/:table_limit_id

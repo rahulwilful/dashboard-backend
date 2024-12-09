@@ -8,6 +8,7 @@ const {
   updateTableLimit,
   getTable,
   getTableLimit,
+  getAllTables
 } = require("../controllers/tableLimits.js");
 
 //@desc TEST
@@ -15,13 +16,18 @@ const {
 //@access Public
 router.get("/", Test);
 
+//@desc Get Table Limit
+//@route GET /get/all/tables
+//@private Login Required
+router.get("/get/all/tables", getAllTables);
+
 //@desc Get Tables
-//@route GET /get/tables
+//@route GET /get/tables/:game_type_id
 //@private Login Required
 router.get("/get/tables/:game_type_id", getTable);
 
 //@desc Get Table Limit
-//@route GET /get/limit/table/:id
+//@route GET /get/:id
 //@private Login Required
 router.get("/get/:id", getTableLimit);
 
