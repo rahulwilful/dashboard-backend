@@ -1,8 +1,8 @@
-const { validationResult, matchedData } = require("express-validator");
-const mysql = require("mysql");
+const { validationResult, matchedData } = require('express-validator');
+const mysql = require('mysql');
 
-const dotenv = require("dotenv").config();
-const db = require("../config/db.js");
+const dotenv = require('dotenv').config();
+const db = require('../config/db.js');
 
 //@desc Get Word
 //@route Get /word/test
@@ -13,9 +13,9 @@ const Test = async (req, res) => {
   // console.log("data: ", req.body, data);
 
   try {
-    res.status(201).send({ result: "Conected to Configs" });
+    res.status(201).send({ result: 'Conected to Configs' });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -38,15 +38,13 @@ const insertInTableType = async (req, res) => {
 
     db.query(checkSql, checkValues, (checkErr, checkResult) => {
       if (checkErr) {
-        console.log("Error checking game_type_name existence:", checkErr);
-        return res.status(500).send({ error: "Database error" });
+        console.log('Error checking game_type_name existence:', checkErr);
+        return res.status(500).send({ error: 'Database error' });
       }
 
       if (checkResult.length > 0) {
         // If game_type_name exists, return 409 Conflict
-        return res
-          .status(409)
-          .send({ error: "Conflict: game_type_name already exists" });
+        return res.status(409).send({ error: 'Conflict: game_type_name already exists' });
       }
 
       // Step 2: Insert the new record
@@ -62,18 +60,16 @@ const insertInTableType = async (req, res) => {
 
       db.query(insertSql, insertValues, (insertErr, insertResult) => {
         if (insertErr) {
-          console.log("Error inserting game_type_name:", insertErr);
+          console.log('Error inserting game_type_name:', insertErr);
           return res.status(400).send({ error: insertErr });
         }
 
-        res
-          .status(201)
-          .send({ message: "Record added successfully", result: insertResult });
+        res.status(201).send({ message: 'Record added successfully', result: insertResult });
       });
     });
   } catch (error) {
-    console.log("Unexpected error:", error);
-    res.status(500).send({ error: "Unexpected server error" });
+    console.log('Unexpected error:', error);
+    res.status(500).send({ error: 'Unexpected server error' });
   }
 };
 
@@ -95,15 +91,13 @@ const addTheme = async (req, res) => {
 
     db.query(checkSql, checkValues, (checkErr, checkResult) => {
       if (checkErr) {
-        console.log("Error checking theme existence:", checkErr);
-        return res.status(500).send({ error: "Database error" });
+        console.log('Error checking theme existence:', checkErr);
+        return res.status(500).send({ error: 'Database error' });
       }
 
       if (checkResult.length > 0) {
         // If theme exists, return 409 Conflict
-        return res
-          .status(409)
-          .send({ error: "Conflict: theme already exists" });
+        return res.status(409).send({ error: 'Conflict: theme already exists' });
       }
 
       // Step 2: Insert the new record
@@ -119,18 +113,16 @@ const addTheme = async (req, res) => {
 
       db.query(insertSql, insertValues, (insertErr, insertResult) => {
         if (insertErr) {
-          console.log("Error inserting theme:", insertErr);
+          console.log('Error inserting theme:', insertErr);
           return res.status(400).send({ error: insertErr });
         }
 
-        res
-          .status(201)
-          .send({ message: "Record added successfully", result: insertResult });
+        res.status(201).send({ message: 'Record added successfully', result: insertResult });
       });
     });
   } catch (error) {
-    console.log("Unexpected error:", error);
-    res.status(500).send({ error: "Unexpected server error" });
+    console.log('Unexpected error:', error);
+    res.status(500).send({ error: 'Unexpected server error' });
   }
 };
 
@@ -152,13 +144,13 @@ const addBackground = async (req, res) => {
 
     db.query(checkSql, checkValues, (checkErr, checkResult) => {
       if (checkErr) {
-        console.log("Error checking background existence:", checkErr);
-        return res.status(500).send({ error: "Database error" });
+        console.log('Error checking background existence:', checkErr);
+        return res.status(500).send({ error: 'Database error' });
       }
 
       if (checkResult.length > 0) {
         // If background exists, return 409 Conflict
-        return res.status(409).send({ error: "Conflict: background already exists" });
+        return res.status(409).send({ error: 'Conflict: background already exists' });
       }
 
       // Step 2: Insert the new record
@@ -174,15 +166,15 @@ const addBackground = async (req, res) => {
 
       db.query(insertSql, insertValues, (insertErr, insertResult) => {
         if (insertErr) {
-          console.log("Error inserting background:", insertErr);
+          console.log('Error inserting background:', insertErr);
           return res.status(400).send({ error: insertErr });
         }
 
-        res.status(201).send({ message: "Background added successfully", result: insertResult });
+        res.status(201).send({ message: 'Background added successfully', result: insertResult });
       });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -205,13 +197,13 @@ const addLanguage = async (req, res) => {
 
     db.query(checkSql, checkValues, (checkErr, checkResult) => {
       if (checkErr) {
-        console.log("Error checking language existence:", checkErr);
-        return res.status(500).send({ error: "Database error" });
+        console.log('Error checking language existence:', checkErr);
+        return res.status(500).send({ error: 'Database error' });
       }
 
       if (checkResult.length > 0) {
         // If language exists, return 409 Conflict
-        return res.status(409).send({ error: "Conflict: language already exists" });
+        return res.status(409).send({ error: 'Conflict: language already exists' });
       }
 
       // Step 2: Insert the new record
@@ -227,17 +219,15 @@ const addLanguage = async (req, res) => {
 
       db.query(insertSql, insertValues, (insertErr, insertResult) => {
         if (insertErr) {
-          console.log("Error inserting language:", insertErr);
+          console.log('Error inserting language:', insertErr);
           return res.status(400).send({ error: insertErr });
         }
 
-        res
-          .status(201)
-          .send({ message: "Language added successfully", result: insertResult });
+        res.status(201).send({ message: 'Language added successfully', result: insertResult });
       });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -252,7 +242,7 @@ const addCurrency = async (req, res) => {
   }
 
   const data = matchedData(req);
-  console.log("data: ", data);
+  console.log('data: ', data);
 
   try {
     // Step 1: Check if the currency already exists
@@ -261,13 +251,13 @@ const addCurrency = async (req, res) => {
 
     db.query(checkSql, checkValues, (checkErr, checkResult) => {
       if (checkErr) {
-        console.log("Error checking currency existence:", checkErr);
-        return res.status(500).send({ error: "Database error" });
+        console.log('Error checking currency existence:', checkErr);
+        return res.status(500).send({ error: 'Database error' });
       }
 
       if (checkResult.length > 0) {
         // If currency exists, return 409 Conflict
-        return res.status(409).send({ error: "Conflict: currency already exists" });
+        return res.status(409).send({ error: 'Conflict: currency already exists' });
       }
 
       // Step 2: Insert the new record
@@ -283,17 +273,15 @@ const addCurrency = async (req, res) => {
 
       db.query(insertSql, insertValues, (insertErr, insertResult) => {
         if (insertErr) {
-          console.log("Error inserting currency:", insertErr);
+          console.log('Error inserting currency:', insertErr);
           return res.status(400).send({ error: insertErr });
         }
 
-        res
-          .status(201)
-          .send({ message: "Currency added successfully", result: insertResult });
+        res.status(201).send({ message: 'Currency added successfully', result: insertResult });
       });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -303,17 +291,17 @@ const addCurrency = async (req, res) => {
 //@access Public
 const getLanguage = async (req, res) => {
   try {
-    const sql = "SELECT * FROM table_language";
+    const sql = 'SELECT * FROM table_language';
 
     db.query(sql, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       res.status(200).send({ languages: result });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -323,17 +311,17 @@ const getLanguage = async (req, res) => {
 //@access Public
 const getCurrency = async (req, res) => {
   try {
-    const sql = "SELECT * FROM currency";
+    const sql = 'SELECT * FROM currency';
 
     db.query(sql, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       res.status(200).send({ currencies: result });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -343,17 +331,17 @@ const getCurrency = async (req, res) => {
 //@access Public
 const getTheme = async (req, res) => {
   try {
-    const sql = "SELECT * FROM table_theme";
+    const sql = 'SELECT * FROM table_theme';
 
     db.query(sql, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       res.status(200).send({ themes: result });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -363,17 +351,17 @@ const getTheme = async (req, res) => {
 //@access Public
 const getBackground = async (req, res) => {
   try {
-    const sql = "SELECT * FROM table_background";
+    const sql = 'SELECT * FROM table_background';
 
     db.query(sql, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       res.status(200).send({ backgrounds: result });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -383,18 +371,18 @@ const getBackground = async (req, res) => {
 //@access Public
 const getTableType = async (req, res) => {
   try {
-    const sql = "SELECT * FROM game_type";
+    const sql = 'SELECT * FROM game_type';
 
     db.query(sql, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
-      console.log("game_types: ", result);
+      console.log('game_types: ', result);
       res.status(200).send({ game_types: result });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -407,23 +395,22 @@ const updateGameType = async (req, res) => {
     const id = req.params.id;
     const data = matchedData(req);
 
-    const sql =
-      "UPDATE game_type SET game_type_name = ?, active = ? WHERE game_type_id = ?";
+    const sql = 'UPDATE game_type SET game_type_name = ?, active = ? WHERE game_type_id = ?';
 
     const values = [data.game_type_name, data.active, id];
 
     db.query(sql, values, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       if (result.affectedRows === 0) {
-        return res.status(404).send({ message: "Record not found" });
+        return res.status(404).send({ message: 'Record not found' });
       }
-      res.status(200).send({ message: "Record updated successfully" });
+      res.status(200).send({ message: 'Record updated successfully' });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -436,22 +423,22 @@ const updateTheme = async (req, res) => {
     const id = req.params.id;
     const data = matchedData(req);
 
-    const sql = "UPDATE table_theme SET theme = ? WHERE theme_id = ?";
+    const sql = 'UPDATE table_theme SET theme = ? WHERE theme_id = ?';
 
     const values = [data.theme, id];
 
     db.query(sql, values, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       if (result.affectedRows === 0) {
-        return res.status(404).send({ message: "Record not found" });
+        return res.status(404).send({ message: 'Record not found' });
       }
-      res.status(200).send({ message: "Record updated successfully" });
+      res.status(200).send({ message: 'Record updated successfully' });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -464,23 +451,22 @@ const updateBackground = async (req, res) => {
     const id = req.params.id;
     const data = matchedData(req);
 
-    const sql =
-      "UPDATE table_background SET background = ? WHERE background_id = ?";
+    const sql = 'UPDATE table_background SET background = ? WHERE background_id = ?';
 
     const values = [data.background, id];
 
     db.query(sql, values, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       if (result.affectedRows === 0) {
-        return res.status(404).send({ message: "Record not found" });
+        return res.status(404).send({ message: 'Record not found' });
       }
-      res.status(200).send({ message: "Record updated successfully" });
+      res.status(200).send({ message: 'Record updated successfully' });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -493,22 +479,22 @@ const updateLanguage = async (req, res) => {
     const id = req.params.id;
     const data = matchedData(req);
 
-    const sql = "UPDATE table_language SET language = ? WHERE language_id = ?";
+    const sql = 'UPDATE table_language SET language = ? WHERE language_id = ?';
 
     const values = [data.language, id];
 
     db.query(sql, values, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       if (result.affectedRows === 0) {
-        return res.status(404).send({ message: "Record not found" });
+        return res.status(404).send({ message: 'Record not found' });
       }
-      res.status(200).send({ message: "Record updated successfully" });
+      res.status(200).send({ message: 'Record updated successfully' });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -521,22 +507,22 @@ const updateCurrency = async (req, res) => {
     const id = req.params.id;
     const data = matchedData(req);
 
-    const sql = "UPDATE currency SET currency = ? WHERE currency_id = ?";
+    const sql = 'UPDATE currency SET currency = ? WHERE currency_id = ?';
 
     const values = [data.currency, id];
 
     db.query(sql, values, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       if (result.affectedRows === 0) {
-        return res.status(404).send({ message: "Record not found" });
+        return res.status(404).send({ message: 'Record not found' });
       }
-      res.status(200).send({ message: "Record updated successfully" });
+      res.status(200).send({ message: 'Record updated successfully' });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -549,49 +535,49 @@ const getConfigs = async (req, res) => {
     const configData = {};
 
     // Get languages
-    const languagesSql = "SELECT * FROM table_language";
+    const languagesSql = 'SELECT * FROM table_language';
     db.query(languagesSql, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       configData.languages = result;
     });
 
     // Get themes
-    const themesSql = "SELECT * FROM table_theme";
+    const themesSql = 'SELECT * FROM table_theme';
     db.query(themesSql, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       configData.themes = result;
     });
 
     // Get backgrounds
-    const backgroundsSql = "SELECT * FROM table_background";
+    const backgroundsSql = 'SELECT * FROM table_background';
     db.query(backgroundsSql, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       configData.backgrounds = result;
     });
 
-    const currencySql = "SELECT * FROM currency";
+    const currencySql = 'SELECT * FROM currency';
     db.query(currencySql, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       configData.currencys = result;
     });
 
     // Get table types
-    const tableTypesSql = "SELECT * FROM game_type";
+    const tableTypesSql = 'SELECT * FROM game_type';
     db.query(tableTypesSql, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       configData.game_types = result;
@@ -599,7 +585,59 @@ const getConfigs = async (req, res) => {
       res.status(200).send(configData);
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
+    res.status(400).send({ error: error });
+  }
+};
+
+//@desc Get all configuration data
+//@route GET /table_limit/get/configs
+//@access Public
+const updateDeleteDays = async (req, res) => {
+  try {
+    const { delete_days } = req.body;
+    if (delete_days === undefined || delete_days === null || delete_days < 0) {
+      return res.status(400).send({ error: 'Invalid delete_days parameter' });
+    }
+
+    const sql = 'UPDATE config SET delete_days = ?';
+    const values = [delete_days];
+
+    db.query(sql, values, (err, result) => {
+      if (err) {
+        console.log('error', err);
+        return res.status(400).send({ error: err });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).send({ message: 'Record not found' });
+      }
+      res.status(200).send({ message: 'Record updated successfully' });
+    });
+  } catch (error) {
+    console.log('error', error);
+    res.status(400).send({ error: error });
+  }
+};
+
+//@desc Get delete days configuration
+//@route GET /table_limit/get/delete_days
+//@access Public
+const getDeleteDays = async (req, res) => {
+  try {
+    const sql = 'SELECT delete_days FROM config LIMIT 1';
+
+    db.query(sql, (err, result) => {
+      if (err) {
+        console.log('error', err);
+        return res.status(400).send({ error: err });
+      }
+      if (result.length === 0) {
+        return res.status(404).send({ message: 'Record not found' });
+      }
+      res.status(200).send({ result: result[0].delete_days, message: 'Record updated successfully' });
+    });
+  } catch (error) {
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -618,6 +656,7 @@ module.exports = {
   getTheme,
   getBackground,
   getCurrency,
+  getDeleteDays,
 
   getTableType,
   getConfigs,
@@ -626,5 +665,6 @@ module.exports = {
   updateTheme,
   updateBackground,
   updateLanguage,
-  updateCurrency
+  updateCurrency,
+  updateDeleteDays
 };

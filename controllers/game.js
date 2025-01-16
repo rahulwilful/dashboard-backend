@@ -1,8 +1,8 @@
-const { validationResult, matchedData } = require("express-validator");
-const mysql = require("mysql");
+const { validationResult, matchedData } = require('express-validator');
+const mysql = require('mysql');
 
-const dotenv = require("dotenv").config();
-const db = require("../config/db.js");
+const dotenv = require('dotenv').config();
+const db = require('../config/db.js');
 
 //@desc TEST
 //@route GET /game
@@ -13,9 +13,9 @@ const Test = async (req, res) => {
   // console.log("data: ", req.body, data);
 
   try {
-    res.status(201).send({ result: "Conected to game" });
+    res.status(201).send({ result: 'Conected to game' });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -35,20 +35,19 @@ const getAllGames = async (req, res) => {
     const sql = `SELECT * FROM game_type `;
 
     /*  ORDER BY date_time DESC AND */
-   
 
     db.query(sql, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       if (result.length === 0) {
-        return res.status(404).send({ message: "Record not found" });
+        return res.status(404).send({ message: 'Record not found' });
       }
       res.status(200).send({ result: result });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -65,27 +64,23 @@ const getGameData = async (req, res) => {
   }
 
   try {
-    const sql = `SELECT * FROM ${
-      req.params.game
-    } WHERE game_type_id = ? AND table_limit_id = ? ORDER BY ${
-      req.params.game + "_id"
-    } DESC LIMIT ${req.params.limit || "100"}`;
+    const sql = `SELECT * FROM ${req.params.game} WHERE game_type_id = ? AND table_limit_id = ? ORDER BY ${req.params.game + '_id'} DESC LIMIT ${req.params.limit || '100'}`;
 
     /*  ORDER BY date_time DESC AND */
     const values = [req.params.game_type_id, req.params.table_limit_id];
 
     db.query(sql, values, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       if (result.length === 0) {
-        return res.status(404).send({ message: "Record not found" });
+        return res.status(404).send({ message: 'Record not found' });
       }
       res.status(200).send({ result: result });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -102,30 +97,25 @@ const getGameDataByDate = async (req, res) => {
   }
 
   try {
-    console.log("data: ", data);
+    console.log('data: ', data);
 
-    const toDateTime = data.to_date + " 23:59:59";
+    const toDateTime = data.to_date + ' 23:59:59';
 
     const sql = `SELECT * FROM ${req.params.game} WHERE game_type_id = ? AND table_limit_id = ? AND date_time BETWEEN ? AND ?`;
-    const values = [
-      req.params.game_type_id,
-      req.params.table_limit_id,
-      data.from_date,
-      toDateTime,
-    ];
+    const values = [req.params.game_type_id, req.params.table_limit_id, data.from_date, toDateTime];
 
     db.query(sql, values, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       if (result.length === 0) {
-        return res.status(404).send({ message: "Record not found" });
+        return res.status(404).send({ message: 'Record not found' });
       }
       res.status(200).send({ result: result });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -142,29 +132,24 @@ const getUniqueGameData = async (req, res) => {
   }
 
   try {
-    const sql = `SELECT * FROM ${
-      req.params.game
-    } WHERE game_type_id = ? AND table_limit_id = ? ORDER BY date_time DESC LIMIT ${
-      req.params.limit || "100"
-    }`;
+    const sql = `SELECT * FROM ${req.params.game} WHERE game_type_id = ? AND table_limit_id = ? ORDER BY date_time DESC LIMIT ${req.params.limit || '100'}`;
     const values = [req.params.game_type_id, req.params.table_limit_id];
 
     db.query(sql, values, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       if (result.length === 0) {
-        return res.status(404).send({ message: "Record not found" });
+        return res.status(404).send({ message: 'Record not found' });
       }
       res.status(200).send({ result: result });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
-
 
 //@desc Get latest 100 records for the last updated table_limit_id
 //@route GET /game/latest/:game
@@ -185,12 +170,12 @@ const getLatestRecords = async (req, res) => {
 
     db.query(findLastUpdatedSql, (err, lastUpdatedResult) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
 
       if (lastUpdatedResult.length === 0) {
-        return res.status(404).send({ message: "No records found" });
+        return res.status(404).send({ message: 'No records found' });
       }
 
       const lastTableLimitId = lastUpdatedResult[0].table_limit_id;
@@ -208,26 +193,93 @@ const getLatestRecords = async (req, res) => {
 
       db.query(getLatestRecordsSql, [lastTableLimitId], (err, result) => {
         if (err) {
-          console.log("error", err);
+          console.log('error', err);
           return res.status(400).send({ error: err });
         }
 
         if (result.length === 0) {
-          return res.status(404).send({ message: "No records found for the last updated table_limit_id" });
+          return res.status(404).send({ message: 'No records found for the last updated table_limit_id' });
         }
 
         res.status(200).send({ result });
       });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
+    res.status(400).send({ error });
+  }
+};
+
+/* 
+tables
+3_card_poker,
+andar_bahar,
+baccarat,
+roulette
+
+*/
+
+//@desc Delete records older than the given date
+//@route DELETE /game/older-than/:game
+//@access private
+const deleteOldRecords = async (req, res) => {
+  const errors = validationResult(req);
+  const data = matchedData(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  try {
+    const { days } = req.body; // Number of days passed in the request body
+
+    // Validate the days input
+    if (days == null || isNaN(days) || days <= 0) {
+      return res.status(400).json({ message: 'Invalid or missing days parameter.' });
+    }
+
+    // Calculate the cutoff date
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+
+    // List of tables to delete records from
+    const tables = ['3_card_poker', 'andar_bahar', 'baccarat', 'roulette'];
+    let totalAffectedRows = 0;
+    let results = [];
+
+    // Function to delete old records from a single table
+    const deleteFromTable = table => {
+      return new Promise((resolve, reject) => {
+        const sql = `DELETE FROM ${table} WHERE date_time < ?`;
+        db.query(sql, [cutoffDate], (err, result) => {
+          if (err) {
+            return reject(err);
+          }
+          totalAffectedRows += result.affectedRows;
+          results.push({ table, affectedRows: result.affectedRows });
+          resolve();
+        });
+      });
+    };
+
+    // Execute delete queries for each table
+    const deletePromises = tables.map(table => deleteFromTable(table));
+
+    // Wait for all delete queries to complete
+    await Promise.all(deletePromises);
+
+    res.status(200).json({
+      message: `Records older than ${days} days successfully deleted from ${tables.join(', ')}.`,
+      results,
+      totalAffectedRows
+    });
+  } catch (error) {
+    console.log('error', error);
     res.status(400).send({ error });
   }
 };
 
 
+module.exports = { deleteOldRecords };
 
-
-
-
-module.exports = { Test,getAllGames, getGameData, getGameDataByDate,getLatestRecords };
+module.exports = { Test, getAllGames, getGameData, getGameDataByDate, getLatestRecords, deleteOldRecords };
