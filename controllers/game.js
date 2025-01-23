@@ -223,63 +223,74 @@ roulette
 //@route DELETE /game/older-than/:game
 //@access private
 const deleteOldRecords = async (req, res) => {
-  const errors = validationResult(req);
-  const data = matchedData(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   try {
-    const { days } = req.body; // Number of days passed in the request body
+    // Step 1: Fetch `delete_days` from the `config` table
+    const fetchDeleteDaysSQL = 'SELECT delete_days FROM config LIMIT 1';
 
-    // Validate the days input
-    if (days == null || isNaN(days) || days <= 0) {
-      return res.status(400).json({ message: 'Invalid or missing days parameter.' });
-    }
+    db.query(fetchDeleteDaysSQL, async (err, result) => {
+      if (err) {
+        console.log('Error fetching delete_days:', err);
+        return res.status(400).send({ error: 'Error fetching delete_days', details: err });
+      }
 
-    // Calculate the cutoff date
-    const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - days);
+      if (result.length === 0) {
+        return res.status(404).send({ message: 'delete_days configuration not found.' });
+      }
 
-    // List of tables to delete records from
-    const tables = ['3_card_poker', 'andar_bahar', 'baccarat', 'roulette'];
-    let totalAffectedRows = 0;
-    let results = [];
+      const deleteDays = result[0].delete_days;
 
-    // Function to delete old records from a single table
-    const deleteFromTable = table => {
-      return new Promise((resolve, reject) => {
-        const sql = `DELETE FROM ${table} WHERE date_time < ?`;
-        db.query(sql, [cutoffDate], (err, result) => {
-          if (err) {
-            return reject(err);
-          }
-          totalAffectedRows += result.affectedRows;
-          results.push({ table, affectedRows: result.affectedRows });
-          resolve();
+      // Validate `delete_days`
+      if (deleteDays == null || isNaN(deleteDays) || deleteDays <= 0) {
+        return res.status(400).json({ message: 'Invalid delete_days configuration value.' });
+      }
+
+      // Step 2: Calculate the cutoff date
+      const cutoffDate = new Date();
+      cutoffDate.setDate(cutoffDate.getDate() - deleteDays);
+
+      // Step 3: Define the tables to delete records from
+      const tables = ['3_card_poker', 'andar_bahar', 'baccarat', 'roulette'];
+      let totalAffectedRows = 0;
+      let results = [];
+
+      // Function to delete old records from a single table
+      const deleteFromTable = table => {
+        return new Promise((resolve, reject) => {
+          const deleteSQL = `DELETE FROM ${table} WHERE date_time < ?`;
+          db.query(deleteSQL, [cutoffDate], (err, result) => {
+            if (err) {
+              return reject({ table, error: err });
+            }
+            totalAffectedRows += result.affectedRows;
+            results.push({ table, affectedRows: result.affectedRows });
+            resolve();
+          });
         });
-      });
-    };
+      };
 
-    // Execute delete queries for each table
-    const deletePromises = tables.map(table => deleteFromTable(table));
+      try {
+        // Step 4: Execute delete queries for all tables
+        const deletePromises = tables.map(table => deleteFromTable(table));
+        await Promise.all(deletePromises);
 
-    // Wait for all delete queries to complete
-    await Promise.all(deletePromises);
-
-    res.status(200).json({
-      message: `Records older than ${days} days successfully deleted from ${tables.join(', ')}.`,
-      results,
-      totalAffectedRows
+        // Step 5: Respond with the results
+        res.status(200).json({
+          message: `Records older than ${deleteDays} days successfully deleted from ${tables.join(', ')}.`,
+          results,
+          totalAffectedRows
+        });
+      } catch (deleteError) {
+        console.log('Error deleting records:', deleteError);
+        res.status(500).json({
+          message: 'An error occurred while deleting records.',
+          error: deleteError
+        });
+      }
     });
   } catch (error) {
-    console.log('error', error);
-    res.status(400).send({ error });
+    console.log('Unexpected error:', error);
+    res.status(500).send({ error: 'Unexpected error', details: error });
   }
 };
-
-
-module.exports = { deleteOldRecords };
 
 module.exports = { Test, getAllGames, getGameData, getGameDataByDate, getLatestRecords, deleteOldRecords };
