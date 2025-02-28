@@ -105,22 +105,37 @@ const createUser = async (req, res) => {
   }
 
   try {
-    const salt = await bcrypt.genSalt(10);
-    const password = await bcrypt.hash(data.password, salt);
-    const values = [data.name, data.user_name, data.phone_no, password, data.roleType, data.limits, data.analysis, data.config, data.settings, data.users];
-
-    const sql = `
-    INSERT INTO users (name, user_name, phone_no, password, roleType, limits, analysis, config, settings,users) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+    const sql_check = `
+    SELECT * FROM users WHERE user_name = ?
   `;
 
-    db.query(sql, values, (err, result) => {
+    db.query(sql_check, [data.user_name], (err, result) => {
       if (err) {
         console.log('error', err);
         return res.status(400).send({ error: err });
       }
 
-      res.status(201).send({ message: 'User created successfully' });
+      if (result.length !== 0) {
+        return res.status(409).send({ message: 'user_name already exists' });
+      }
+
+      const salt = bcrypt.genSaltSync(10);
+      const password = bcrypt.hashSync(data.password, salt);
+      const values = [data.name, data.user_name, data.phone_no, password, data.roleType, data.limits, data.analysis, data.config, data.settings, data.users];
+
+      const sql = `
+    INSERT INTO users (name, user_name, phone_no, password, roleType, limits, analysis, config, settings,users) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+  `;
+
+      db.query(sql, values, (err, result) => {
+        if (err) {
+          console.log('error', err);
+          return res.status(400).send({ error: err });
+        }
+
+        res.status(201).send({ message: 'User created successfully' });
+      });
     });
   } catch (error) {
     console.log('error', error);

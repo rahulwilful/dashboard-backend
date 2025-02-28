@@ -5,7 +5,7 @@ const dotenv = require('dotenv').config();
 const db = require('../config/db.js');
 
 //@desc TEST
-//@route GET /game  
+//@route GET /game
 //@access Public
 const Test = async (req, res) => {
   const errors = validationResult(req);
