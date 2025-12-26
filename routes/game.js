@@ -49,7 +49,7 @@ router.post(
 //@desc Get latest 100 records for the last updated table_limit_id
 //@route GET /game/latest/:game
 //@access private
-router.post('/get/latest/data/of/:game', getLatestRecords, deleteOldRecords);
+router.post('/get/latest/data/of/:game', getLatestRecords);
 
 //@desc Delete records older than the given date
 //@route DELETE /game/older-than/:game

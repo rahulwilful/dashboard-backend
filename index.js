@@ -7,7 +7,16 @@ const mysql = require('mysql');
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:3000'
+  })
+);
+
+app.get('/', (req, res) => {
+  console.log('request hit');
+  return res.status(200).send('Welcome To The Back-End');
+});
 
 //app.use("/words", require("./routes/words.js"));
 app.use('/table/limits', require('./routes/tableLimits.js'));

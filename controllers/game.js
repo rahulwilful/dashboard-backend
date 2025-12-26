@@ -35,7 +35,7 @@ const getAllGames = async (req, res) => {
     const sql = `SELECT * FROM game_type `;
 
     /*  ORDER BY date_time DESC AND */
-
+    console.log('getAllGames called');
     db.query(sql, (err, result) => {
       if (err) {
         console.log('error', err);
@@ -158,25 +158,33 @@ const getLatestRecords = async (req, res) => {
   const errors = validationResult(req);
   const data = matchedData(req);
 
+  console.log('getLatestRecords 1');
+
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
+  console.log('getLatestRecords 2');
+
   try {
     const { game } = req.params;
-
+    console.log('getLatestRecords 3');
     // Query to find the latest table_limit_id
     const findLastUpdatedSql = `SELECT table_limit_id FROM ${game} ORDER BY date_time DESC LIMIT 1`;
 
     db.query(findLastUpdatedSql, (err, lastUpdatedResult) => {
+      console.log('getLatestRecords 4');
       if (err) {
         console.log('error', err);
         return res.status(400).send({ error: err });
       }
+      console.log('getLatestRecords 5');
 
       if (lastUpdatedResult.length === 0) {
         return res.status(404).send({ message: 'No records found' });
       }
+
+      console.log('getLatestRecords 6');
 
       const lastTableLimitId = lastUpdatedResult[0].table_limit_id;
 
@@ -190,13 +198,13 @@ const getLatestRecords = async (req, res) => {
         ORDER BY g.date_time DESC
         LIMIT 100
       `;
-
+      console.log('getLatestRecords 7');
       db.query(getLatestRecordsSql, [lastTableLimitId], (err, result) => {
         if (err) {
           console.log('error', err);
           return res.status(400).send({ error: err });
         }
-
+        console.log('getLatestRecords 8');
         if (result.length === 0) {
           return res.status(404).send({ message: 'No records found for the last updated table_limit_id' });
         }
@@ -204,8 +212,9 @@ const getLatestRecords = async (req, res) => {
         res.status(200).send({ result });
       });
     });
+    console.log('getLatestRecords 9');
   } catch (error) {
-    console.log('error', error);
+    console.log('getLatestRecords error', error);
     res.status(400).send({ error });
   }
 };

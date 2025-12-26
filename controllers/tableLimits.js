@@ -1,8 +1,8 @@
-const { validationResult, matchedData } = require("express-validator");
-const mysql = require("mysql");
+const { validationResult, matchedData } = require('express-validator');
+const mysql = require('mysql');
 
-const dotenv = require("dotenv").config();
-const db = require("../config/db.js");
+const dotenv = require('dotenv').config();
+const db = require('../config/db.js');
 
 //@desc Get Word
 //@route Get /word/test
@@ -15,9 +15,9 @@ const Test = async (req, res) => {
   try {
     let sql = `select * from wn_word where word = "${data.word}" `;
 
-    res.status(201).send({ result: "Conected to table limits" });
+    res.status(201).send({ result: 'Conected to table limits' });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -39,15 +39,13 @@ const getAllTables = async (req, res) => {
 
     db.query(sql, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
-      res
-        .status(201)
-        .send({ message: "Record retrived successfully", result: result });
+      res.status(201).send({ message: 'Record retrived successfully', result: result });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -71,6 +69,7 @@ const getTable = async (req, res) => {
         tl.max_bet, 
         tl.side_bet_min, 
         tl.side_bet_max, 
+        tl.ActiveMac,
         tl.s_message, 
         gt.game_type_id, 
         gt.game_type_name, 
@@ -91,15 +90,13 @@ const getTable = async (req, res) => {
 
     db.query(sql, [id], (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
-      res
-        .status(201)
-        .send({ message: "Record retrived successfully", result: result });
+      res.status(201).send({ message: 'Record retrived successfully', result: result });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -118,15 +115,13 @@ const getTableLimit = async (req, res) => {
 
       db.query(sql, [id], (err, result) => {
         if (err) {
-          console.log("error", err);
+          console.log('error', err);
           return res.status(400).send({ error: err });
         }
-        res
-          .status(201)
-          .send({ message: "Record retrived successfully", result: result[0] });
+        res.status(201).send({ message: 'Record retrived successfully', result: result[0] });
       });
     } catch (error) {
-      console.log("error", error);
+      console.log('error', error);
       res.status(400).send({ error: error });
     }
   } else {
@@ -169,7 +164,7 @@ const addTableLimit = async (req, res) => {
       data.language_id,
       data.background_id, // Corrected to match the number of columns
       data.currency_id,
-      data.commission,
+      data.commission
     ];
 
     const sql2 = `
@@ -184,21 +179,19 @@ const addTableLimit = async (req, res) => {
 
     db.query(sql, values, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       db.query(sql2, values2, (err2, result2) => {
         if (err2) {
-          console.log("error", err2);
+          console.log('error', err2);
           return res.status(400).send({ error: err2 });
         }
-        res
-          .status(201)
-          .send({ message: "Record added successfully", result: result });
+        res.status(201).send({ message: 'Record added successfully', result: result });
       });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -213,7 +206,7 @@ const updateTableLimit = async (req, res) => {
   }
 
   const data = matchedData(req);
-  console.log("data: ", data);
+  console.log('data: ', data);
   //return res.status(200).send({ message: "Record updated successfully" });
 
   try {
@@ -223,7 +216,7 @@ const updateTableLimit = async (req, res) => {
           max_bet = ${data.max_bet},
           side_bet_min = ${data.side_bet_min},
           side_bet_max = ${data.side_bet_max},
-          s_message = '${data.s_message || ""}',
+          s_message = '${data.s_message || ''}',
           theme_id = ${data.theme_id},
           language_id = ${data.language_id},
           background_id = ${data.background_id},
@@ -234,16 +227,16 @@ const updateTableLimit = async (req, res) => {
 
     db.query(sql, (err, result) => {
       if (err) {
-        console.log("error", err);
+        console.log('error', err);
         return res.status(400).send({ error: err });
       }
       if (result.affectedRows === 0) {
-        return res.status(404).send({ message: "Record not found" });
+        return res.status(404).send({ message: 'Record not found' });
       }
-      res.status(200).send({ message: "Record updated successfully" });
+      res.status(200).send({ message: 'Record updated successfully' });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     res.status(400).send({ error: error });
   }
 };
@@ -254,5 +247,5 @@ module.exports = {
   getAllTables,
   addTableLimit,
   updateTableLimit,
-  getTableLimit,
+  getTableLimit
 };

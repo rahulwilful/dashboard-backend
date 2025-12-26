@@ -150,7 +150,7 @@ const Login = async (req, res) => {
   const errors = validationResult(req);
   const data = matchedData(req);
 
-  console.log('data', data);
+  console.log('login data', data);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
@@ -161,6 +161,7 @@ const Login = async (req, res) => {
     const sql = `SELECT * FROM users WHERE user_name = ?`;
 
     db.query(sql, [user_name], async (err, result) => {
+      console.log('result', result);
       if (err) {
         console.log('error', err);
         return res.status(400).send({ error: err });
@@ -184,6 +185,56 @@ const Login = async (req, res) => {
         expiresIn: '100h'
       });
 
+      return res.status(200).send({
+        token: token,
+        user: user,
+        message: 'User logged in successfully'
+      });
+    });
+  } catch (error) {
+    console.log('error', error);
+    return res.status(400).send({ error: error });
+  }
+};
+
+/* const Login = async (req, res) => {
+  const errors = validationResult(req);
+  const data = matchedData(req);
+
+  console.log('data', data);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  try {
+    const { user_name, password } = data;
+
+    const sql = 'SELECT * FROM users WHERE user_name = ? AND password = ?';
+
+    db.query("SELECT * FROM users WHERE user_name = '" + user_name + "' AND password = '" + password + "';", [user_name, password], async (err, result) => {
+      if (err) {
+        console.log('error', err);
+        return res.status(400).send({ error: err });
+      }
+
+      if (result.length === 0) {
+        return res.status(404).send({ message: 'User not found' });
+      }
+
+      const user = result[0];
+      console.log('user', user.active);
+      if (user.active == false) return res.status(403).send({ message: 'User is Forbidden' });
+
+      const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+        return res.status(401).send({ message: 'Password incorrect' });
+      } 
+
+      const token = jwt.sign({ user: user }, process.env.ACCESS_TOKEN_SECERT, {
+        expiresIn: '100h'
+      });
+
       res.status(200).send({ token: token, message: 'User logged in successfully' });
     });
   } catch (error) {
@@ -191,6 +242,7 @@ const Login = async (req, res) => {
     return res.status(400).send({ error: error });
   }
 };
+ */
 
 //@desc Delete User
 //@route DELETE /user/:id
@@ -287,6 +339,7 @@ const toggleActive = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   if (!req.user) return res.status(401).send({ error: 'User not Authorized' });
+  console.log('user: ', req.user);
   if (req.user.roleType !== 'super_admin' && req.user.users === false) {
     return res.status(401).send({ error: 'User not Authorized' });
   }
