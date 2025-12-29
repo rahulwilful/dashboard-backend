@@ -233,12 +233,38 @@ const updateTableLimit = async (req, res) => {
       if (result.affectedRows === 0) {
         return res.status(404).send({ message: 'Record not found' });
       }
-      res.status(200).send({ message: 'Record updated successfully' });
+
+      if (data.ActiveMac === false) {
+        const deleteResult = supportDeleteActiveMac(req.params.id);
+        if (deleteResult instanceof Error) {
+          return res.status(400).send({ error: deleteResult });
+        }
+      }
+
+      return res.status(200).send({ message: 'Record updated successfully' });
     });
   } catch (error) {
     console.log('error', error);
-    res.status(400).send({ error: error });
+    return res.status(400).send({ error: error });
   }
+};
+
+const supportDeleteActiveMac = tableLimitId => {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      UPDATE table_limit
+      SET ActiveMac = NULL
+      WHERE table_limit_id = ?
+    `;
+
+    db.query(sql, [tableLimitId], (err, result) => {
+      if (err) {
+        console.log('error', err);
+        return reject(err);
+      }
+      resolve(true);
+    });
+  });
 };
 
 module.exports = {
